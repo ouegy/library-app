@@ -15,16 +15,42 @@ function Book(title, author, pages, read) {
     };
 }
 
-const lotr = new Book('The Lord of the Rings', 'JRR Tolkein', '565 pages', true);
-const theHobbit = new Book('The Hobbit', 'JRR Tolkien', '295 pages', false);
+const lotr = new Book('The Lord of the Rings', 'JRR Tolkein', '565 pages', 'Yes');
+const theHobbit = new Book('The Hobbit', 'JRR Tolkien', '295 pages', 'No');
 
-function addBookToLibrary() {
-    myLibrary.push(theHobbit);
-    myLibrary.push(lotr);
+myLibrary.push(lotr);
+
+if(myLibrary) {
+    displayBooks(myLibrary);
 }
 
-const getBookInfo = (text) => {
+function getFormData() {
+    const form = document.getElementById('add-new-book');
+    form.addEventListener('click', (e) => {
+        e.preventDefault();
+        const title = document.getElementById('title').value;
+        const author = document.getElementById('author').value;
+        const pages = document.getElementById('pages').value;
+        const read = document.querySelector('input[name="read"]:checked').value;
 
+        const book = new Book(`${title}`, `${author}`, `${pages}`, `${read}`);
+        addBookToLibrary(book);
+        displayBooks(myLibrary.slice(-1));  
+        deleteBook(myLibrary);
+        return book;
+    });  
+    
+}
+
+function addBookToLibrary(book) {
+    myLibrary.push(book);  
+    
+}
+
+function setDataAttribute(array) {
+    let lastIndex = array.length - 1;
+    console.log(lastIndex);
+    return lastIndex;   
 }
 
 function displayBooks(array) {
@@ -33,7 +59,7 @@ function displayBooks(array) {
         let author = book.author;
         let pages = book.pages;
         let read = book.read;
-        let index = array.indexOf(book);
+        
 
         const mainDiv = document.getElementById("main");
         const div = document.createElement('div');
@@ -42,10 +68,13 @@ function displayBooks(array) {
         const button2 = document.createElement('button');
 
         const createBookCard = (book) => {
-            div.setAttribute('class', 'card');
+            let index = setDataAttribute(myLibrary);
+            div.setAttribute('class', 'card drop-shadow');
             div.setAttribute('data-attribute', index);
             buttons.setAttribute('class', 'buttons');
-            button1.appendChild(document.createTextNode('Remove Book'));
+            button1.appendChild(document.createTextNode('Delete Book'));
+            button1.setAttribute('data-attribute', index);
+            button1.setAttribute('class', 'delete')
             button2.appendChild(document.createTextNode('Update Read Status'));
             buttons.appendChild(button1);
             buttons.appendChild(button2);
@@ -63,12 +92,37 @@ function displayBooks(array) {
 
         const arr = [`Title: ${title}`, `Author: ${author}`, `Pages: ${pages}`, `Read: ${read}`];
         arr.forEach(element => getBookInfo(element));
-
     });
 }
 
+function toggleForm() {
+    const newBook = document.getElementById('new-book');
+    newBook.addEventListener('click', () => {
+        const newBookForm = document.getElementById('new-book-form');
+        newBookForm.classList.remove('hidden');
+        newBookForm.classList.add('fade-in');
+    });
+}
 
-addBookToLibrary();
-displayBooks(myLibrary);
+function deleteBook(array) {
+    const del = Array.from(document.getElementsByClassName('delete'));
+    console.table(del);
+    del.forEach(button => {
+        button.addEventListener('click', () => {
+            console.log('click');
+            const index = button.getAttribute('data-attribute');
+            console.log(index);
+            array.splice(index, 1);
+            console.table(myLibrary);
+            const element = document.querySelector(`div[data-attribute='${index}']`);
+            element.remove();
+        });
+    });
+    
+}
+
+deleteBook(myLibrary);
+getFormData();
+toggleForm();
 
 console.table(myLibrary);
