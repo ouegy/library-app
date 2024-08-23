@@ -15,10 +15,11 @@ function Book(title, author, pages, read) {
     };
 }
 
-const lotr = new Book('The Lord of the Rings', 'JRR Tolkein', '565 pages', 'Yes');
+const lotr = new Book('The Lord of the Rings', 'JRR Tolkein', '565 pages', 'No');
 const theHobbit = new Book('The Hobbit', 'JRR Tolkien', '295 pages', 'No');
 
 myLibrary.push(lotr);
+
 
 if(myLibrary) {
     displayBooks(myLibrary);
@@ -36,6 +37,7 @@ function getFormData() {
         const book = new Book(`${title}`, `${author}`, `${pages}`, `${read}`);
         addBookToLibrary(book);
         displayBooks(myLibrary.slice(-1));  
+        updateReadStatus();
         deleteBook(myLibrary);
         return book;
     });  
@@ -49,7 +51,6 @@ function addBookToLibrary(book) {
 
 function setDataAttribute(array) {
     let lastIndex = array.length - 1;
-    console.log(lastIndex);
     return lastIndex;   
 }
 
@@ -76,6 +77,8 @@ function displayBooks(array) {
             button1.setAttribute('data-attribute', index);
             button1.setAttribute('class', 'delete')
             button2.appendChild(document.createTextNode('Update Read Status'));
+            button2.setAttribute('class', 'update');
+            button2.setAttribute('data-attribute', index);
             buttons.appendChild(button1);
             buttons.appendChild(button2);
             mainDiv.appendChild(div);
@@ -106,14 +109,10 @@ function toggleForm() {
 
 function deleteBook(array) {
     const del = Array.from(document.getElementsByClassName('delete'));
-    console.table(del);
     del.forEach(button => {
         button.addEventListener('click', () => {
-            console.log('click');
             const index = button.getAttribute('data-attribute');
-            console.log(index);
             array.splice(index, 1);
-            console.table(myLibrary);
             const element = document.querySelector(`div[data-attribute='${index}']`);
             element.remove();
         });
@@ -121,8 +120,28 @@ function deleteBook(array) {
     
 }
 
+
+//funnction to listen for click event on update read status button, update the read variable in the object and replace the last child of the div with the updated read status
+function updateReadStatus() {
+    const update = Array.from(document.getElementsByClassName('update'));
+    update.forEach(button => {
+        button.addEventListener('click', () => {
+            const index = button.getAttribute('data-attribute');
+            const book = myLibrary[index];
+            if(book.read === 'No') {
+                book.read = 'Yes';
+            }
+            const element = document.querySelector(`div[data-attribute='${index}']`);
+            element.lastChild.remove();
+            const h2 = document.createElement('h2');
+            element.appendChild(h2);
+            h2.appendChild(document.createTextNode(`Read: ${book.read}`));
+        });
+    });
+}
+
 deleteBook(myLibrary);
 getFormData();
 toggleForm();
-
+updateReadStatus();
 console.table(myLibrary);
