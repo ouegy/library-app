@@ -1,13 +1,15 @@
 const myLibrary = [];
 
-function Book(title, author, pages, read) {
-    this.title = title;
-    this.author = author;
-    this.pages = pages;
-    this.read = read;
-    this.info = function() {
+class Book {
+    constructor(title, author, pages, read) {
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.read = read;
+    }
+    info() {
         return {
-            title: title,
+            this: title,
             author: author,
             pages: pages,
             read: read,
@@ -19,7 +21,6 @@ const lotr = new Book('The Lord of the Rings', 'JRR Tolkein', '565 pages', 'No')
 const theHobbit = new Book('The Hobbit', 'JRR Tolkien', '295 pages', 'No');
 
 myLibrary.push(lotr);
-
 
 if(myLibrary) {
     displayBooks(myLibrary);
@@ -61,7 +62,6 @@ function displayBooks(array) {
         let pages = book.pages;
         let read = book.read;
         
-
         const mainDiv = document.getElementById("main");
         const div = document.createElement('div');
         const buttons = document.createElement('div');
@@ -83,7 +83,7 @@ function displayBooks(array) {
             buttons.appendChild(button2);
             mainDiv.appendChild(div);
             div.appendChild(buttons);
-        }
+        };
 
         createBookCard();
 
@@ -119,7 +119,6 @@ function deleteBook(array) {
     });
     
 }
-
 
 //funnction to listen for click event on update read status button, update the read variable in the object and replace the last child of the div with the updated read status
 function updateReadStatus() {
